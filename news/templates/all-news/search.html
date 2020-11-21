@@ -1,8 +1,6 @@
-{% load cloudinary %}
 {%extends 'all-news/base.html'%} 
 {% block content %}
 <div class="container">
-
   <div class="row">
     {% if articles%}
       <h2>Found {{ articles|length }} of searched term {{message}}</h2>

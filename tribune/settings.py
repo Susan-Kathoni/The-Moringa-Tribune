@@ -14,10 +14,11 @@ from pathlib import Path
 import django_heroku
 import dj_database_url
 from decouple import config,Csv
-
 import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+
+# import cloudinary
+# import cloudinary.uploader
+# import cloudinary.api
 # from unipath import Path
 
 
@@ -30,34 +31,34 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-MODE=config("MODE", default="dev")
+MODE=config("MODE")
 SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG')
 # development
-if config('MODE')=="dev":
-   DATABASES = {
-       'default': {
-           'ENGINE': 'django.db.backends.postgresql_psycopg2',
-           'NAME': config('DB_NAME'),
-           'USER': config('DB_USER'),
-           'PASSWORD': config('DB_PASSWORD'),
-           'HOST': config('DB_HOST'),
-           'PORT': '',
-       }
+# if config('MODE')=="dev":
+#    DATABASES = {
+#        'default': {
+#            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#            'NAME': config('DB_NAME'),
+#            'USER': config('DB_USER'),
+#            'PASSWORD': config('DB_PASSWORD'),
+#            'HOST': config('DB_HOST'),
+#            'PORT': '',
+#        }
        
-   }
-# production
-else:
-   DATABASES = {
-       'default': dj_database_url.config(
-           default=config('DATABASE_URL')
-       )
-   }
+#    }
+# # production
+# else:
+#    DATABASES = {
+#        'default': dj_database_url.config(
+#            default=config('DATABASE_URL')
+#        )
+#    }
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+# db_from_env = dj_database_url.config(conn_max_age=500)
+# DATABASES['default'].update(db_from_env)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS')
 # Application definition
 
 INSTALLED_APPS = [
@@ -69,15 +70,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary',
 ]
 
-cloudinary.config( 
-  cloud_name = config('cloud_name'),
-  api_key = config('api_key'),
-  api_secret = config('api_secret'), 
-)
- 
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MIDDLEWARE = [
@@ -124,8 +119,8 @@ if config('MODE')=="dev":
             'USER': config('DB_USER'),
             'PASSWORD':config('DB_PASSWORD'),
             'HOST': config('DB_HOST'),
-            'PORT': '',
-            'DATABASE_URL': config('DATABASE_URL'),
+            'PORT': config('DB_PORT'),
+            # 'DATABASE_URL': config('DATABASE_URL'),
     }
 }
 # production
@@ -187,6 +182,12 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+cloudinary.config(
+  cloud_name = config('CLOUDINARY_CLOUD_NAME'),  
+  api_key = config('CLOUDINARY_CLOUD_NAME'),  
+  api_secret =  config('CLOUDINARY_CLOUD_NAME'),
+)
 
 # Configure Django App for Heroku.
 django_heroku.settings(locals())
